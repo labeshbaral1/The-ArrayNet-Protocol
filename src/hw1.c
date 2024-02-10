@@ -112,7 +112,33 @@ unsigned int reconstruct_array_sf(unsigned char *packets[], unsigned int packets
     (void)packets_len;
     (void)array;
     (void)array_len;
-    return -1;
+
+    unsigned int uncorrupted_integers = 0;
+
+    //extract payload if checksum is valid for the packet checksum_sf(packet) == packet.checksum
+    //store up array_len ingegers inside of array
+    //fragment_offset tells you where in the array to start writing the payload (written in bytes therefore divide by 4 to find what index to start at)
+    //return the number of integers that arent corrupted
+
+    for (unsigned int packet_index = 0; packet_index < packets_len; packet_index++) {
+        unsigned char *current_packet = packets[packet_index];
+        __uint32_t check_sum = ((current_packet[12] & 0x7F) << 16) | (current_packet[13] << 8) | (current_packet[14]);
+        __uint16_t packet_length = ((current_packet[9] & 0x03) << 12) | (current_packet[10] << 4) | (current_packet[11] >> 4);
+        __uint16_t fragment_offset = (current_packet[8] << 6) | (current_packet[9] >> 2);
+
+        unsigned int array_start_index = fragment_offset / 4; // index of where to begin writing payloads into the array
+
+        if (check_sum == compute_checksum_sf(current_packet)) {
+            for (unsigned int i = 16, array_i = array_start_index; i < packet_length && array_i < array_len; i += 4, array_i++) {
+                array[array_i] = (current_packet[i] << 24) | (current_packet[i+1] << 16) | (current_packet[i+2] << 8) | (current_packet[i+3]); //construct 32 bit integer and write it to the array
+                ++uncorrupted_integers;
+            }
+        }
+    }
+
+    return uncorrupted_integers;
+
+
 }
 
 unsigned int packetize_array_sf(int *array, unsigned int array_len, unsigned char *packets[], unsigned int packets_len,
