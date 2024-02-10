@@ -33,10 +33,9 @@ void print_packet_sf(unsigned char packet[])
         }
 
     int first = 1;
-     __int32_t integer = 0;    
+     
     for (int i = 16; i <= packet_length - 4; i += 4) {
-                   
-        
+        __int32_t integer = 0;    
         if (!first) {
             printf(" "); 
         } else {
@@ -51,13 +50,13 @@ void print_packet_sf(unsigned char packet[])
     }
 
     if (packet_length % 4 != 0) {
-        integer = 0;
+        __int32_t lastInteger = 0;
         int start = packet_length - (packet_length % 4);
 
         for (int j = start; j < packet_length; j++) {
-            integer |= (__int32_t)packet[j] << ((packet_length - 1 - j) * 8);
+            lastInteger |= (__int32_t)packet[j] << ((packet_length - 1 - j) * 8);
         }
-        printf("%d\n", integer);
+        printf("%d\n", lastInteger);
                 }
     else{
         printf("\n");
