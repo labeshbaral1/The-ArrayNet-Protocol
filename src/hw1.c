@@ -227,6 +227,11 @@ unsigned int packetize_array_sf(int *array, unsigned int array_len, unsigned cha
         memcpy(curr_packet + check_sum, &check_sum, sizeof(check_sum)); packet_offset += sizeof(check_sum);
 
         valid_packets++;
+
+        for (unsigned int i = 0; i < number_of_packets; i++) {
+            free(packets[i]);
+        }       
+        
         free(packets);    
         packets = NULL;
 }
