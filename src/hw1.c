@@ -188,7 +188,7 @@ unsigned int packetize_array_sf(int *array, unsigned int array_len, unsigned cha
     //calculating packet_length = (integers in packet + 16 ) * 4 
     //calculating checksum = use compute_checksum_sf
     
-    unsigned int number_of_packets = (array_len + max_payload - 1) / max_payload; //rounds  
+    unsigned int number_of_packets = (array_len + max_payload - 1) / max_payload; //rounds up if the last packet is not in 1 byte per element form
 
     for(unsigned int packets_index = 0; packets_index < number_of_packets; packets_index++){
 
@@ -227,7 +227,10 @@ unsigned int packetize_array_sf(int *array, unsigned int array_len, unsigned cha
         memcpy(curr_packet + check_sum, &check_sum, sizeof(check_sum)); packet_offset += sizeof(check_sum);
 
         valid_packets++;
-    }
+        free(packets);    
+        packets = NULL;
+}
+
 
     
 
