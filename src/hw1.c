@@ -1,5 +1,6 @@
 #include "hw1.h"
 
+
 void print_packet_sf(unsigned char packet[])
 {
     __uint32_t source_address =  (packet[0] << 20) | (packet[1] << 12) | (packet[2] << 4) | (packet[3] >> 4);
@@ -188,24 +189,25 @@ unsigned int packetize_array_sf(int *array, unsigned int array_len, unsigned cha
     //calculating packet_length = (integers in packet + 16 ) * 4 
     //calculating checksum = use compute_checksum_sf
     
-    unsigned int number_of_packets = (array_len + max_payload - 1) / max_payload; //rounds up if the last packet is not in 1 byte per element form
+
+    unsigned int number_of_packets = (array_len + max_payload - 1) / max_payload; //rounds up if the last packet is not in 1 byte per element form ie performs a cieling division
 
     for(unsigned int packets_index = 0; packets_index < number_of_packets; packets_index++){
-
 
         unsigned int packet_size;
         unsigned int fragment_offset;
         unsigned int packet_len;
 
-        if (packets_index == number_of_packets - 1){
-            packet_size = 64 + (integer_in_final_payload * 4); 
-            fragment_offset = integer_in_final_payload * 4;
-            packet_len = (integer_in_final_payload + 16) * 4 ;
-        }
-        else{
+        
+        if (((packets_index != number_of_packets - 1) || (integer_in_final_payload == 0))){
             packet_size = 64 + (integers_per_payload * 4); 
             fragment_offset = integers_per_payload * 4;
             packet_len = (integers_per_payload + 16) * 4 ;
+        }
+        else {
+            packet_size = 64 + (integer_in_final_payload * 4); 
+            fragment_offset = integer_in_final_payload * 4;
+            packet_len = (integer_in_final_payload + 16) * 4 ;
         }
         
         packets[packets_index] = malloc(packet_size);
