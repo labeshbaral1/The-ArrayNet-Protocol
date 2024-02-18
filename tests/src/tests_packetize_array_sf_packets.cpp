@@ -18,7 +18,9 @@ TEST(packetize_array_sf_TestSuite, Test1_contents_of_packets_array)
 	"\x00\x1e\x0f\x32\x0e\xf4\x86\xcd\x00\x40\x02\x07\x10\xd6\x21\x0f\x00\x00\x00\x0e\x00\x00\x00\x0f\x00\x00\x00\x10\x00\x00\x00\x11",
 	"\x00\x1e\x0f\x32\x0e\xf4\x86\xcd\x00\x80\x02\x07\x10\xd6\x41\x0f\x00\x00\x00\x12\x00\x00\x00\x13\x00\x00\x00\x14\x00\x00\x00\x15",
 	};
+	
 	unsigned int expected_packet_lengths[] = {32, 32, 32, };
+
 	packetize_array_sf(array, sizeof(array) / sizeof(array[0]), actual_packets,
 			sizeof(actual_packets) / sizeof(actual_packets[0]), max_payload, src_addr, dest_addr, src_port, dest_port, 
 			maximum_hop_count, compression_scheme, traffic_class);

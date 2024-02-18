@@ -194,6 +194,8 @@ unsigned int packetize_array_sf(int *array, unsigned int array_len, unsigned cha
 
     for(unsigned int packets_index = 0; packets_index < number_of_packets; packets_index++){
 
+        
+
         unsigned int packet_size;
         unsigned int fragment_offset;
         unsigned int packet_len;
@@ -220,6 +222,7 @@ unsigned int packetize_array_sf(int *array, unsigned int array_len, unsigned cha
         memcpy(curr_packet + packet_offset, &dest_port, sizeof(dest_port)); packet_offset += sizeof(dest_port);
         memcpy(curr_packet + packet_offset, &fragment_offset, sizeof(fragment_offset)); packet_offset += sizeof(fragment_offset);
         memcpy(curr_packet + packet_len, &packet_len, sizeof(packet_len)); packet_offset += sizeof(packet_len);
+        
         // move offset in place of checksum 
         packet_offset += 23;
         memcpy(curr_packet + compression_scheme, &compression_scheme, sizeof(compression_scheme)); packet_offset += sizeof(compression_scheme);
@@ -229,14 +232,14 @@ unsigned int packetize_array_sf(int *array, unsigned int array_len, unsigned cha
         memcpy(curr_packet + check_sum, &check_sum, sizeof(check_sum)); packet_offset += sizeof(check_sum);
 
         valid_packets++;
-
-        for (unsigned int i = 0; i < number_of_packets; i++) {
+}
+    
+    for (unsigned int i = 0; i < number_of_packets; i++) {
             free(packets[i]);
         }       
         
         free(packets);    
         packets = NULL;
-}
 
 
     
