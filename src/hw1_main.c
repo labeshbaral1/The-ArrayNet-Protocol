@@ -7,27 +7,26 @@
 int main(){
 
 
+   int array[] = {17, 89, 42, 631, 52, 77, 89, 100, 125, -6, 823, 800, 1024, 1025, 9, 1888, 0, -17, 19, 9999999, -888888, 723, 1000, 1111, -99, -95, 55, };
+    unsigned char* actual_packets[4] = {0};
+    unsigned int num_expected_packets = 4;
+    unsigned int max_payload = 20;
+    unsigned int src_addr = 93737;
+    unsigned int dest_addr = 10973;
+    unsigned int src_port = 11;
+    unsigned int dest_port = 6;
+    unsigned int maximum_hop_count = 25;
+    unsigned int compression_scheme = 3;
+    unsigned int traffic_class = 14;
 
-    int array[] = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, };
-    unsigned char* actual_packets[3] = {0};
-    unsigned int num_expected_packets = 3;
-    unsigned int max_payload = 16;
-    unsigned int src_addr = 123123;
-    unsigned int dest_addr = 34534534;
-    unsigned int src_port = 12;
-    unsigned int dest_port = 13;
-    unsigned int maximum_hop_count = 14;
-    unsigned int compression_scheme = 0;
-    unsigned int traffic_class = 15;
-
-
-	const char *expected_packets[] = {
-	"\x00\x1e\x0f\x32\x0e\xf4\x86\xcd\x00\x00\x02\x07\x10\xd6\x01\x0f\x00\x00\x00\x0a\x00\x00\x00\x0b\x00\x00\x00\x0c\x00\x00\x00\x0d",
-	"\x00\x1e\x0f\x32\x0e\xf4\x86\xcd\x00\x40\x02\x07\x10\xd6\x21\x0f\x00\x00\x00\x0e\x00\x00\x00\x0f\x00\x00\x00\x10\x00\x00\x00\x11",
-	"\x00\x1e\x0f\x32\x0e\xf4\x86\xcd\x00\x80\x02\x07\x10\xd6\x41\x0f\x00\x00\x00\x12\x00\x00\x00\x13\x00\x00\x00\x14\x00\x00\x00\x15",
+ 
+    const char *expected_packets[] = {
+	"\x00\x16\xe2\x90\x00\x2a\xdd\xb6\x00\x00\x02\x4c\x81\x9c\xa4\xce\x00\x00\x00\x11\x00\x00\x00\x59\x00\x00\x00\x2a\x00\x00\x02\x77\x00\x00\x00\x34",
+	"\x00\x16\xe2\x90\x00\x2a\xdd\xb6\x00\x50\x02\x4c\x81\x9b\x06\xce\x00\x00\x00\x4d\x00\x00\x00\x59\x00\x00\x00\x64\x00\x00\x00\x7d\xff\xff\xff\xfa",
+	"\x00\x16\xe2\x90\x00\x2a\xdd\xb6\x00\xa0\x02\x4c\x81\xa7\xee\xce\x00\x00\x03\x37\x00\x00\x03\x20\x00\x00\x04\x00\x00\x00\x04\x01\x00\x00\x00\x09",
+	"\x00\x16\xe2\x90\x00\x2a\xdd\xb6\x00\xf0\x02\x4c\x9a\x37\xa5\xce\x00\x00\x07\x60\x00\x00\x00\x00\xff\xff\xff\xef\x00\x00\x00\x13\x00\x98\x96\x7f",
 	};
-	
-	unsigned int expected_packet_lengths[] = {32, 32, 32, };
+	unsigned int expected_packet_lengths[] = {36, 36, 36, 36, };
 
 	packetize_array_sf(array, sizeof(array) / sizeof(array[0]), actual_packets,
 			sizeof(actual_packets) / sizeof(actual_packets[0]), max_payload, src_addr, dest_addr, src_port, dest_port, 
@@ -51,7 +50,7 @@ int main(){
     for (int i = 0; i < arraySize2; i++) {
         if (actual_packets[i] != NULL) {
             printf("\n");
-            
+
             printf("---------- Packet %d --------------\n", i+1); 
             print_packet_sf(actual_packets[i]); 
 

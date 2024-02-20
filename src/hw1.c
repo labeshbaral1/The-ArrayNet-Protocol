@@ -90,16 +90,16 @@ unsigned int compute_checksum_sf(unsigned char packet[])
             calculated_checksum += abs(integer);
         }
 
-        if (packet_length % 4 != 0) {
-            integer = 0;
+        // if (packet_length % 4 != 0) {
+        //     integer = 0;
             
-            int start = packet_length - (packet_length % 4);
+        //     int start = packet_length - (packet_length % 4);
 
-            for (int j = start; j < packet_length; j++) {
-                integer |= (__int32_t)packet[j] << ((packet_length - 1 - j) * 8);
-            }
-            calculated_checksum += abs(integer);
-        }
+        //     for (int j = start; j < packet_length; j++) {
+        //         integer |= (__int32_t)packet[j] << ((packet_length - 1 - j) * 8);
+        //     }
+        //     calculated_checksum += abs(integer);
+        // }
 
     calculated_checksum %=  (1 << 23) - 1;
     
@@ -194,10 +194,7 @@ unsigned int packetize_array_sf(int *array, unsigned int array_len, unsigned cha
     //calculating checksum = use compute_checksum_sf
     
 
-    unsigned int number_of_packets = (array_len + (max_payload/4) - 1) / (max_payload/4); //rounds up if the last packet is not in 1 byte per element form ie performs a cieling division
-
-
-        
+        unsigned int number_of_packets = (array_len + (max_payload/4) - 1) / (max_payload/4); //rounds up if the last packet is not in 1 byte per element form ie performs a cieling division
 
         unsigned int packet_size;
         unsigned int fragment_offset = 0;
@@ -206,11 +203,11 @@ unsigned int packetize_array_sf(int *array, unsigned int array_len, unsigned cha
         for(unsigned int packets_index = 0; packets_index < number_of_packets; packets_index++){
 
         
-        if (((packets_index != number_of_packets - 1) || (integer_in_final_payload == 0))){
-            packet_size = 16 + integers_per_payload*4; 
+        if (packets_index == number_of_packets - 1 && integer_in_final_payload != 0){
+             packet_size = 16 + integer_in_final_payload*4; 
         }
         else {
-            packet_size = 16 + integer_in_final_payload*4; 
+            packet_size = 16 + integers_per_payload*4; 
         }
 
 
@@ -257,35 +254,48 @@ unsigned int packetize_array_sf(int *array, unsigned int array_len, unsigned cha
         curr_packet[packet_offset++] = byte10 & 0xFF;
     
         unsigned int packet_len_last4bits = (packet_size) & 0xF;
-        unsigned int maximum_hop_first4bits = (maximum_hop_count) >> 1;
+        unsigned int maximum_hop_first4bits = (maximum_hop_count& 0x1E) >> 1;
         unsigned int byte11 = (packet_len_last4bits << 4) | maximum_hop_first4bits;
         curr_packet[packet_offset++] = byte11 & 0xFF;
 
-        unsigned int check_sum = compute_checksum_sf(curr_packet);
-        unsigned int maximum_hop_last1bits = maximum_hop_count & 0x1;
-        unsigned int checksum_first_7bits = (check_sum >> 16) & 0x7F;
-        unsigned int byte12 = (maximum_hop_last1bits << 7) & checksum_first_7bits;
-        curr_packet[packet_offset++] = byte12 & 0xFF;
+        curr_packet[12] =  ((maximum_hop_count & 0x1) << 7);
 
-        unsigned int check_sum_last16bits =  check_sum & 0xFFFF;
-        curr_packet[packet_offset++] = (check_sum_last16bits >> 8) & 0xFF; 
-        curr_packet[packet_offset++] = check_sum_last16bits & 0xFF;
+        packet_offset+=3; //skip over 3 bytes
          
         unsigned int byte15 = (compression_scheme << 6 ) | (traffic_class & 0x3F);
         curr_packet[packet_offset++] = byte15 & 0xFF;
     
         unsigned int integer;
 
-        for(unsigned int j = 0; j < ((packet_size-16)/4); j+=1){
-            integer = array[array_ptr++]; 
-            curr_packet[packet_offset++] = integer & 0xFF;
+        
+
+        
+
+        for(unsigned int k = 0; k < ((packet_size-16) /4); k++){ 
+            for(unsigned int j = 0; j < 4 ; j++){
+                integer = array[array_ptr]; 
+                curr_packet[packet_offset++] = (integer >> (24 - (j * 8))) & 0xFF ;
+            }
+            array_ptr++;
         }
         
+
+        unsigned int check_sum = compute_checksum_sf(curr_packet);
+
+        unsigned int maximum_hop_last1bits = maximum_hop_count & 0x1;
+        unsigned int checksum_first_7bits = (check_sum >> 16) & 0x7F;
+        unsigned int byte12 = (maximum_hop_last1bits << 7) | checksum_first_7bits;
+        curr_packet[12] = byte12 & 0xFF;
+
+        unsigned int check_sum_last16bits =  check_sum & 0xFFFF;
+        curr_packet[13] = (check_sum_last16bits >> 8) & 0xFF; 
+        curr_packet[14] = check_sum_last16bits & 0xFF;
 
         fragment_offset += packet_size-16;
 
 
-    valid_packets++;
+        
+        valid_packets++;
         }
     
 
