@@ -213,7 +213,6 @@ unsigned int packetize_array_sf(int *array, unsigned int array_len, unsigned cha
             packet_size = 16 + integer_in_final_payload*4; 
         }
 
-        fragment_offset += 16;
 
         
         packets[packets_index] = malloc(packet_size);
@@ -250,21 +249,21 @@ unsigned int packetize_array_sf(int *array, unsigned int array_len, unsigned cha
         curr_packet[packet_offset++] = byte8 & 0xFF;
 
         unsigned int fragment_offset_last6bits = fragment_offset & 0x3F;
-        unsigned int packet_len_first2bits = ((packet_size) >> 12 ) & 0x3;
+        unsigned int packet_len_first2bits = (packet_size >> 12 ) & 0x3;
         unsigned int byte9 = (fragment_offset_last6bits << 2) | (packet_len_first2bits);
         curr_packet[packet_offset++] = byte9 & 0xFF;
 
-        unsigned int byte10 = ((packet_size) & 0x3F00) >> 4;
+        unsigned int byte10 = ((packet_size) & 0xFF0) >> 4;
         curr_packet[packet_offset++] = byte10 & 0xFF;
     
         unsigned int packet_len_last4bits = (packet_size) & 0xF;
         unsigned int maximum_hop_first4bits = (maximum_hop_count) >> 1;
-        unsigned int byte11 = (packet_len_last4bits<<4) | maximum_hop_first4bits;
+        unsigned int byte11 = (packet_len_last4bits << 4) | maximum_hop_first4bits;
         curr_packet[packet_offset++] = byte11 & 0xFF;
 
         unsigned int check_sum = compute_checksum_sf(curr_packet);
         unsigned int maximum_hop_last1bits = maximum_hop_count & 0x1;
-        unsigned int checksum_first_7bits = check_sum >> 16;
+        unsigned int checksum_first_7bits = (check_sum >> 16) & 0x7F;
         unsigned int byte12 = (maximum_hop_last1bits << 7) & checksum_first_7bits;
         curr_packet[packet_offset++] = byte12 & 0xFF;
 

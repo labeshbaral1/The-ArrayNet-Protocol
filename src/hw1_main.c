@@ -51,6 +51,7 @@ int main(){
     for (int i = 0; i < arraySize2; i++) {
         if (actual_packets[i] != NULL) {
             printf("\n");
+            
             printf("---------- Packet %d --------------\n", i+1); 
             print_packet_sf(actual_packets[i]); 
 
