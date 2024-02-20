@@ -308,7 +308,9 @@ unsigned int packetize_array_sf(int *array, unsigned int array_len, unsigned cha
     
 
      
-
+    if (valid_packets > packets_len){
+        valid_packets = packets_len;
+    }
 
     return valid_packets;
 }
