@@ -1,4 +1,4 @@
-# CSE 220: Systems Fundamentals I - Homework #1
+# The ArrayNet Protocol
 
 ## Responsibilities
 
@@ -30,6 +30,7 @@ The implementation of the ArrayNet Protocol showcases several features, includin
 
 ### Screenshots and Diagrams
 Template of a network chunk
+
 <img width="751" alt="Screenshot 2024-03-26 at 2 16 19 PM" src="https://github.com/labeshbaral1/cse220_hw1/assets/99603007/71b38b69-7789-46ee-b27a-d850dc8106fc">
 
 
