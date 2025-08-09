@@ -8,10 +8,10 @@ This project implements the ArrayNet Protocol, a fictional network protocol desi
 - Traversing and manipulating arrays of bytes to simulate the sending, receiving, and processing of network packets.
 - Ensuring the integrity and correct ordering of transmitted data through checksum verification and fragment offset handling.
 
-## Technologies / C++ Concepts Used
+## Technologies / C Concepts Used
 
 ### Language Used
-C++
+C
 
 ### Key Concepts
 - **Data Structures**: Utilization of arrays to model network packets and their payloads.
@@ -48,7 +48,7 @@ git clone https://github.com/yourusername/yourrepository.git
 
 ### Compilation
 
-Navigate to the project directory where the source code is located. Compile the source code using a C++ compiler, such as g++, with the following command:
+Navigate to the project directory where the source code is located. Compile the source code using a C compiler, such as g++, with the following command:
 
 ```bash
 g++ -o arraynet hw1.c -std=c++11
